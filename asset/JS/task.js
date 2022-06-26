@@ -1,3 +1,4 @@
+import axios from "axios"// fixme 
 new Vue({
     
     el: '#app',
