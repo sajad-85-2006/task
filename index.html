@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="asset/Style/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://unpkg.com/vue@2"></script>
+</head>
+</head>
+
+<body>
+    <div id="app">
+        {{ info }}
+        <div id="id01" class="modal" v-show="modal">
+            <span class="close" v-on:click="modal = false" title="Close Modal">&times;</span>
+            <form class="modal-content" action="/action_page.php">
+                <div class="container">
+                    <h1>Delete Account</h1>
+                    <p>Are you sure you want to delete your account?</p>
+
+                    <div class="clearfix">
+                        <button type="button" class="cancelbtn">Cancel</button>
+                        <button type="button" class="deletebtn">Delete</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="myModal" class="modal_1" v-show="modal_1">
+
+            <!-- Modal content -->
+            <div class="modal-content_1">
+                <span v-on:click="modal_1 = false" class="close_1">&times;</span>
+                <p>Some text in the Modal..</p>
+                <hr>
+                <form class="input">
+                    <input>
+                    <input>
+                    <input>
+                    <button></button>
+                </form>
+            </div>
+
+        </div>
+        <div id="myModal" class="modal_1" v-show="modal_2">
+
+            <!-- Modal content -->
+            <div class="modal-content_1">
+                <span v-on:click="modal_2 = false" class="close_1">&times;</span>
+                <div>
+                    <img>
+                    <h2></h2>
+                    <p></p>
+                    <table>
+                        <tr>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <header>
+            <span v-on:click="modal_1 = true" class="icone">+</span>
+        </header>
+        <div class="body">
+
+            <h2>Your Task:</h2>
+            <button v-show="edit" v-on:click="edit =false">Cancel</button>
+            <hr style="border: 1px solid gainsboro">
+            <form action="index.html">
+
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Number Item</th>
+                        <th>Caption</th>
+                        <th>...</th>
+                    </tr>
+                    <tr>
+                        <td v-on:click="edit =true" v-if="!edit">Task</td>
+                        <td v-if="edit">
+                            <input name="task" value="Task" />
+                            <button style="display: none;"></button>
+                        </td>
+                        <td v-on:click="edit =true" v-if="!edit">3</td>
+                        <td v-if="edit">
+                            <input name="task_1" value="Task" />
+                        </td>
+                        <td v-on:click="edit =true" v-if="!edit">front/bakend/grafic</td>
+                        <td v-if="edit">
+                            <input value="Task" />
+                        </td>
+                        <td>
+                            <a class="fa fa-times icon" v-on:click="modal = true" style="color: red;"></a>
+                            <span v-on:click="edit =true" class="fa fa-pencil-square-o icon"
+                                style="color: green;"></span>
+                            <span v-on:click="modal_2 = true" class="fa fa-user icon" style="color: blue ;"></span>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <script src="asset/JS/task.js"></script>
+    <script src="asset/JS/vue.js"></script>
+</body>
+
+</html>
