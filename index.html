@@ -5,25 +5,30 @@
     <link href="asset/Style/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://unpkg.com/vue@2"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- <script>require('es6-promise').polyfill();</script> -->
 </head>
 </head>
 
 <body>
     <div id="app">
-        {{ info }}
         <div id="id01" class="modal" v-show="modal">
             <span class="close" v-on:click="modal = false" title="Close Modal">&times;</span>
-            <form class="modal-content" action="/action_page.php">
+            <div class="modal-content" action="/action_page.php">
                 <div class="container">
                     <h1>Delete Account</h1>
                     <p>Are you sure you want to delete your account?</p>
-
+                    <p>{{id}}</p>
                     <div class="clearfix">
                         <button type="button" class="cancelbtn">Cancel</button>
-                        <button type="button" class="deletebtn">Delete</button>
+                        <form action="http://localhost:9000/task/delete">
+                            <input name="id" v-model="id" style="display: none;">
+                            <button type="submit" class="deletebtn">Delete</button>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
         <div id="myModal" class="modal_1" v-show="modal_1">
 
@@ -32,11 +37,12 @@
                 <span v-on:click="modal_1 = false" class="close_1">&times;</span>
                 <p>Some text in the Modal..</p>
                 <hr>
-                <form class="input">
-                    <input>
-                    <input>
-                    <input>
-                    <button></button>
+
+                <form class="input" method="post">
+                    <input v-model="name" name="name">
+                    <input v-model="caption" name="caption">
+                    <input v-model="number" name="number">
+                    <button type="button" v-on:click="Create(name,caption,number,'task')"></button>
                 </form>
             </div>
 
@@ -46,18 +52,55 @@
             <!-- Modal content -->
             <div class="modal-content_1">
                 <span v-on:click="modal_2 = false" class="close_1">&times;</span>
-                <div>
+                <div v-if="!form">
                     <img>
                     <h2></h2>
                     <p></p>
+                    <button style="background-color: rgb(0, 153, 255);" v-on:click="form = true"class="fa fa-plus icon"></button>
+
                     <table>
                         <tr>
-                            <th></th>
+                            <th>name</th>
+                            <th>caption</th>
+                            <th>time</th>
+                            <th>...</th>
                         </tr>
-                        <tr>
-                            <td></td>
+                        <tr v-for="w in item">
+                            <td v-on:click="edit_1 = true" v-if="!edit_1">{{w.name}}</td>
+                            <td v-if="edit_1">
+                                <form>
+                                    <input v-model="w.name">
+                                </form>
+                            </td>
+                            <td v-on:click="edit_1 = true" v-if="!edit_1">{{w.caption}}</td>
+                            <td  v-if="edit_1">
+                                <form>
+                                    <input v-model="w.caption">
+                                </form>
+                            </td>
+                            <td v-on:click="edit_1 = true" v-if="!edit_1">{{w.time}}</td>
+                            <td v-if="edit_1">
+                                <form>
+                                    <input v-model="w.time">
+                                </form>
+                            </td>
+                            <td>
+                                <a v-if="!edit_1" class="fa fa-times icon" v-on:click="Deelete(w.id,'form')" style="color: red;"></a>
+                                <span v-if="edit_1" v-on:click="edit_1=false" class="fa fa-window-close-o icon"style="color: red;"></span>
+                                <span v-if="!edit_1" v-on:click="edit_1=true" class="fa fa-pencil-square-o icon"style="color: green;"></span>
+                                <a v-if="edit_1" class="fa fa-check icon" v-on:click="Update(w.name,w.time,w.caption,w.id,'form')" style="color: green;"></a>
+                            </td>
                         </tr>
                     </table>
+                </div>
+                <div v-if="form">
+                    <button v-on:click="form = false">Cancel</button>
+                    <form class="input" method="post">
+                        <input v-model="name_1" name="name_1">
+                        <input v-model="caption_1" name="caption_1">
+                        <input v-model="time" name="time">
+                        <button type="button" v-on:click="Create(name_1,caption_1,time,'form')"></button>
+                    </form>
                 </div>
             </div>
 
@@ -66,47 +109,60 @@
             <span v-on:click="modal_1 = true" class="icone">+</span>
         </header>
         <div class="body">
-
             <h2>Your Task:</h2>
             <button v-show="edit" v-on:click="edit =false">Cancel</button>
             <hr style="border: 1px solid gainsboro">
-            <form action="index.html">
-
+            <div style="height: 270px;overflow: auto;">
                 <table>
                     <tr>
                         <th>Name</th>
                         <th>Number Item</th>
                         <th>Caption</th>
+                        <th v-show="edit"></th>
                         <th>...</th>
                     </tr>
-                    <tr>
-                        <td v-on:click="edit =true" v-if="!edit">Task</td>
+                    <tr v-for="a in info">
+
+                        <td v-if="!edit" v-on:click="modal_2 = true">{{a.name}}</td>
                         <td v-if="edit">
-                            <input name="task" value="Task" />
-                            <button style="display: none;"></button>
+                            <form>
+                                <input v-model="a.name">
+                            </form>
                         </td>
-                        <td v-on:click="edit =true" v-if="!edit">3</td>
+                        <td v-if="!edit" v-on:click="modal_2 = true">{{a.number}}</td>
                         <td v-if="edit">
-                            <input name="task_1" value="Task" />
+                            <form>
+                                <input v-model="a.number">
+                            </form>
                         </td>
-                        <td v-on:click="edit =true" v-if="!edit">front/bakend/grafic</td>
+                        <td v-if="!edit" v-on:click="modal_2 = true">{{a.caption}}</td>
                         <td v-if="edit">
-                            <input value="Task" />
+                            <form>
+                                <input v-model="a.caption">
+
+                            </form>
+                        </td>
+                        <td v-if="edit">
+                            <button type="button" v-show="edit"v-on:click="Update(a.name,a.number,a.caption,a.id,'task')">save</button>
+
                         </td>
                         <td>
-                            <a class="fa fa-times icon" v-on:click="modal = true" style="color: red;"></a>
+                            <a class="fa fa-times icon" v-on:click="Deelete(a.id,'task')" style="color: red;"></a>
                             <span v-on:click="edit =true" class="fa fa-pencil-square-o icon"
                                 style="color: green;"></span>
-                            <span v-on:click="modal_2 = true" class="fa fa-user icon" style="color: blue ;"></span>
+                            <!-- <span v-on:click="modal_2 = true" class="fa fa-user icon" style="color: blue ;"></span> -->
                         </td>
+
+
                     </tr>
                 </table>
-            </form>
+            </div>
+
         </div>
     </div>
-
     <script src="asset/JS/task.js"></script>
     <script src="asset/JS/vue.js"></script>
+
 </body>
 
 </html>
